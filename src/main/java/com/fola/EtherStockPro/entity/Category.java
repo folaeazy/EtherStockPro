@@ -27,7 +27,7 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category")
-    private List<?> products;
+    private List<Product> products;
 
     @Override
     public String toString() {

@@ -41,7 +41,7 @@ public class User {
     private UserRoles role;
 
     @OneToMany(mappedBy = "user")
-    private List<?> transactions;
+    private List<Transaction> transactions;
 
     private final LocalDateTime createdAt = LocalDateTime.now();
 
@@ -51,7 +51,6 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", role=" + role +
                 ", createdAt=" + createdAt +

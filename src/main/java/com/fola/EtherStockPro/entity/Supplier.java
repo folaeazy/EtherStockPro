@@ -23,5 +23,7 @@ public class Supplier {
     @NotBlank(message = "name cannot be blank")
     private  String name;
 
+    private  String contactInfo;
+
     private String address;
 }
