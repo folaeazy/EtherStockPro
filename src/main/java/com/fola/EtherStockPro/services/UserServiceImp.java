@@ -14,7 +14,6 @@ import com.fola.EtherStockPro.interfaces.UserService;
 import com.fola.EtherStockPro.repository.UserRepository;
 import com.fola.EtherStockPro.security.AuthUser;
 import com.fola.EtherStockPro.security.JwtUtils;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -25,6 +24,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -103,14 +103,14 @@ public class UserServiceImp implements UserService {
 
 
     @Override
-
     public ApiResponse<List<UserDTO>> getAllUsers() {
         List<User> users = userRepository.findAll(Sort.by(Sort.Direction.DESC, "id")); //in order of latest user
 
-
         List<UserDTO> userDTOS = modelMapper.map(users, new TypeToken<List<UserDTO>>() {}.getType());
+        //filter away the users transaction
+        userDTOS.forEach(userDto -> userDto.setTransactions(null));
 
-        userDTOS.forEach(userDTO -> userDTO.setTransactions(null));
+
         return ApiResponse.<List<UserDTO>>builder()
                 .status(HttpStatus.OK.value())
                 .message("success")
@@ -120,21 +120,65 @@ public class UserServiceImp implements UserService {
 
     @Override
     public User getCurrentLoggedInUser() {
-        return null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("user not found"));
+        user.setTransactions(null);
+
+        return user;
     }
 
     @Override
     public ApiResponse<UserDTO> updateUser(Long id, UserDTO userDTO) {
-        return null;
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        if(userDTO.getName() != null) existingUser.setName(userDTO.getName());
+        if(userDTO.getEmail() != null) existingUser.setEmail(userDTO.getEmail());
+        if(userDTO.getPhoneNumber() != null) existingUser.setPhoneNumber(userDTO.getPhoneNumber());
+        if(userDTO.getRole() != null) existingUser.setRole(userDTO.getRole());
+
+        userRepository.save(existingUser);
+
+        return ApiResponse.<UserDTO>builder()
+                .status(HttpStatus.OK.value())
+                .message("update successful")
+                .build();
+
     }
 
     @Override
     public ApiResponse<Void> deleteUser(Long id) {
-        return null;
+         userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+         userRepository.deleteById(id);
+
+        return ApiResponse.<Void>builder()
+                .status(HttpStatus.OK.value())
+                .message("user deleted successfully")
+                .build();
+
+
     }
 
     @Override
     public ApiResponse<List<TransactionDTO>> getUserTransactions(Long id) {
-        return null;
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+
+        userDTO.getTransactions().forEach(transactionDTO -> {
+            transactionDTO.setUser(null);
+            transactionDTO.setSupplier(null);
+        });
+
+        return ApiResponse.<List<TransactionDTO>>builder()
+                .status(HttpStatus.OK.value())
+                .message("success")
+                .userDTO(userDTO)
+                .build();
     }
 }
