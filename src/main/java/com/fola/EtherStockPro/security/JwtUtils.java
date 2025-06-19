@@ -21,7 +21,7 @@ public class JwtUtils {
 
     private static final long EXPIRATION_TIME_IN_MILLISEC = 100L * 60L * 60L * 24L * 30L * 6L;
 
-    private SecretKey key;
+    private final SecretKey key;
 
     public JwtUtils( @Value("$(secretJwtPrivateKey)") String secretJwtPrivateKey) {
        this.key = Keys.hmacShaKeyFor(secretJwtPrivateKey.getBytes(StandardCharsets.UTF_8));
