@@ -2,6 +2,7 @@ package com.fola.EtherStockPro.DTO.Response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fola.EtherStockPro.DTO.*;
+import com.fola.EtherStockPro.entity.Product;
 import com.fola.EtherStockPro.enums.UserRoles;
 import lombok.Builder;
 import lombok.Data;
@@ -37,7 +38,7 @@ public class ApiResponse<T> {
     private SupplierDTO supplierDTO;
     private List<SupplierDTO> supplierDTOS;
 
-    private ProductDTO productDTO;
+    private Product product;
     private List<ProductDTO> productDTOS;
 
     private TransactionDTO transactionDTO;
