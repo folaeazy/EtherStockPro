@@ -7,7 +7,6 @@ import com.fola.EtherStockPro.DTO.TransactionDTO;
 import com.fola.EtherStockPro.DTO.UserDTO;
 import com.fola.EtherStockPro.entity.User;
 import com.fola.EtherStockPro.enums.UserRoles;
-import com.fola.EtherStockPro.exceptions.GlobalExceptionHandler;
 import com.fola.EtherStockPro.exceptions.InvalidCredentialsException;
 import com.fola.EtherStockPro.exceptions.NotFoundException;
 import com.fola.EtherStockPro.interfaces.UserService;
@@ -17,6 +16,7 @@ import com.fola.EtherStockPro.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -41,6 +41,7 @@ public class UserServiceImp implements UserService {
     private final ModelMapper modelMapper;
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
+
 
 
     @Override
@@ -104,9 +105,22 @@ public class UserServiceImp implements UserService {
 
     @Override
     public ApiResponse<List<UserDTO>> getAllUsers() {
+
+        //----------LOCAL MODEL MAPPER TO SKIP TRANSACTION FIELD--------------//
+        PropertyMap<User, UserDTO> skipTransactions = new PropertyMap<>() {
+            @Override
+            protected void configure() {
+                skip(destination.getTransactions());
+            }
+        };
+
+        ModelMapper localMapper = new ModelMapper();
+        localMapper.addMappings(skipTransactions);
+        //------------------------ENDS HERE---------------//
+
         List<User> users = userRepository.findAll(Sort.by(Sort.Direction.DESC, "id")); //in order of latest user
 
-        List<UserDTO> userDTOS = modelMapper.map(users, new TypeToken<List<UserDTO>>() {}.getType());
+        List<UserDTO> userDTOS = localMapper.map(users, new TypeToken<List<UserDTO>>() {}.getType());
         //filter away the users transaction
         userDTOS.forEach(userDto -> userDto.setTransactions(null));
 
