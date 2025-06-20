@@ -44,7 +44,9 @@ public class UserController {
     }
 
 
+    @GetMapping("/current")
     public ResponseEntity<User> getCurrentUser() {
-        return ResponseEntity.ok(userService.getCurrentLoggedInUser());
+
+       return ResponseEntity.ok(userService.getCurrentLoggedInUser());
     }
 }

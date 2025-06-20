@@ -4,6 +4,7 @@ package com.fola.EtherStockPro.controllers;
 import com.fola.EtherStockPro.DTO.CategoryDTO;
 import com.fola.EtherStockPro.DTO.Response.ApiResponse;
 import com.fola.EtherStockPro.interfaces.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +20,8 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<String>> createCategory(@RequestBody  CategoryDTO categoryDTO) {
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ApiResponse<String>> createCategory(@RequestBody @Valid CategoryDTO categoryDTO) {
         return ResponseEntity.ok(categoryService.createCategory(categoryDTO));
 
     }

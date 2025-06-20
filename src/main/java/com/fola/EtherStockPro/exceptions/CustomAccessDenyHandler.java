@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.io.IOException;
 
+
 @Component
 @RequiredArgsConstructor
 public class CustomAccessDenyHandler implements AccessDeniedHandler {
