@@ -168,8 +168,10 @@ public class UserServiceImp implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
+        // map to userDTO
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
 
+        // Access the Transactions field to its DTO and render user and supply null to avoid circular or recursive calling
         userDTO.getTransactions().forEach(transactionDTO -> {
             transactionDTO.setUser(null);
             transactionDTO.setSupplier(null);
@@ -178,7 +180,7 @@ public class UserServiceImp implements UserService {
         return ApiResponse.<List<TransactionDTO>>builder()
                 .status(HttpStatus.OK.value())
                 .message("success")
-                .userDTO(userDTO)
+                .transactionDTOS(userDTO.getTransactions())
                 .build();
     }
 }
