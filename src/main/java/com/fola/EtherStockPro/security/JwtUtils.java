@@ -23,7 +23,7 @@ public class JwtUtils {
 
     private final SecretKey key;
 
-    public JwtUtils( @Value("$(secretJwtPrivateKey)") String secretJwtPrivateKey) {
+    public JwtUtils( @Value("${secretJwtPrivateKey}") String secretJwtPrivateKey) {
        this.key = Keys.hmacShaKeyFor(secretJwtPrivateKey.getBytes(StandardCharsets.UTF_8));
     }
 

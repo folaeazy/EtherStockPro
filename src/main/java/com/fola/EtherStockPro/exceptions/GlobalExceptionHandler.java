@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
     public <T> ResponseEntity<ApiResponse<T>> handleGlobalException(Exception ex) {
         ApiResponse<T> response = ApiResponse.<T>builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("An unexpected error occured" + ex.getMessage())
+                .message("An unexpected error occured " + ex.getMessage())
                 .build();
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 
