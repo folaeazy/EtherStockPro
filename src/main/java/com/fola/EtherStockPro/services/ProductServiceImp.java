@@ -52,7 +52,7 @@ public class ProductServiceImp implements ProductService {
                 .price(productDTO.getPrice())
                 .category(category)
                 .description(productDTO.getDescription())
-                .stockQuantity(BigInteger.valueOf(productDTO.getStockQuantity()))
+                .stockQuantity(productDTO.getStockQuantity())
                 .build();
 
         if(imageFile != null) {
@@ -105,7 +105,7 @@ public class ProductServiceImp implements ProductService {
             existingProduct.setPrice(productDTO.getPrice());
         }
         if (productDTO.getStockQuantity() != null  && productDTO.getStockQuantity() >= 0) {
-            existingProduct.setStockQuantity(BigInteger.valueOf(productDTO.getStockQuantity()));
+            existingProduct.setStockQuantity((productDTO.getStockQuantity()));
         }
 
         productRepository.save(existingProduct);
