@@ -17,7 +17,7 @@ public interface UserService {
 
     ApiResponse <List<UserDTO>>  getAllUsers();
 
-    User getCurrentLoggedInUser();
+    ApiResponse <UserDTO> getCurrentLoggedInUser();
 
     ApiResponse<UserDTO> updateUser(Long id, UserDTO userDTO);
 

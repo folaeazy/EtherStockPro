@@ -38,14 +38,14 @@ public class UserController {
         return ResponseEntity.ok(userService.deleteUser(id));
     }
 
-    @GetMapping("transactions/{id}")
+    @GetMapping("/transactions/{id}")
     public ResponseEntity<ApiResponse<List<TransactionDTO>>> getUserTransactions(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserTransactions(id));
     }
 
 
     @GetMapping("/current")
-    public ResponseEntity<User> getCurrentUser() {
+    public ResponseEntity<ApiResponse<UserDTO>> getCurrentUser() {
 
        return ResponseEntity.ok(userService.getCurrentLoggedInUser());
     }

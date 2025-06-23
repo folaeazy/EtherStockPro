@@ -3,6 +3,7 @@ package com.fola.EtherStockPro.services;
 import com.fola.EtherStockPro.DTO.Requests.TransactionRequestDTO;
 import com.fola.EtherStockPro.DTO.Response.ApiResponse;
 import com.fola.EtherStockPro.DTO.TransactionDTO;
+import com.fola.EtherStockPro.DTO.UserDTO;
 import com.fola.EtherStockPro.entity.Product;
 import com.fola.EtherStockPro.entity.Supplier;
 import com.fola.EtherStockPro.entity.Transaction;
@@ -56,7 +57,8 @@ public class TransactionServiceImp implements TransactionService {
         Supplier supplier = supplierRepository.findById(supplierId)
                 .orElseThrow(() -> new NotFoundException("supplier not found"));
 
-        User user = userService.getCurrentLoggedInUser();
+        UserDTO userDTO = userService.getCurrentLoggedInUser().getUserDTO();
+        User user = modelMapper.map(userDTO, User.class);
 
         //Update stock quantity and re-save
         product.setStockQuantity(product.getStockQuantity() + quantity);
@@ -96,7 +98,8 @@ public class TransactionServiceImp implements TransactionService {
         Supplier supplier = supplierRepository.findById(supplierId)
                 .orElseThrow(() -> new NotFoundException("supplier not found"));
 
-        User user = userService.getCurrentLoggedInUser();
+        UserDTO userDTO = userService.getCurrentLoggedInUser().getUserDTO();
+        User user = modelMapper.map(userDTO, User.class);
 
         //Update stock quantity and re-save
         product.setStockQuantity(product.getStockQuantity() - quantity);
@@ -134,7 +137,9 @@ public class TransactionServiceImp implements TransactionService {
         Supplier supplier = supplierRepository.findById(supplierId)
                 .orElseThrow(() -> new NotFoundException("supplier not found"));
 
-        User user = userService.getCurrentLoggedInUser();
+        UserDTO userDTO = userService.getCurrentLoggedInUser().getUserDTO();
+        User user = modelMapper.map(userDTO, User.class);
+
 
         //Update stock quantity and re-save
         product.setStockQuantity(product.getStockQuantity() - quantity);

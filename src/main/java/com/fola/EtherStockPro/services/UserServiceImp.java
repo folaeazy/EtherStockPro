@@ -133,14 +133,17 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User getCurrentLoggedInUser() {
+    public ApiResponse<UserDTO> getCurrentLoggedInUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("user not found"));
-        user.setTransactions(null);
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        userDTO.setTransactions(null);
 
-        return user;
+        return ApiResponse.<UserDTO>builder()
+                .userDTO(userDTO)
+                .build();
     }
 
     @Override
