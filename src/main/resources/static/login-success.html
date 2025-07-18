@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login Success</title>
+</head>
+<body>
+<h1>✅ You are logged in successfully!</h1>
+<p>Welcome to your dashboard or home page.</p>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      alert("Not authenticated. Redirecting to login.");
+      window.location.href = "/login.html";
+      return;
+    }
+
+
+    try {
+      const response = await fetch(`/api/users/current`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(result);
+        document.getElementById("welcome").innerText = `Welcome, ${result.userDTO.name}!`;
+      } else {
+        alert("Unauthorized or error occurred.");
+        localStorage.removeItem("authToken");
+        window.location.href = "/login.html";
+      }
+
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      alert("Something went wrong.");
+    }
+  });
+</script>
+
+<h1 id="welcome">Loading...</h1>
+
+</body>
+
+
+</html>

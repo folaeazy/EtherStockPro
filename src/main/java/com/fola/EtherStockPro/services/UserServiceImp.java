@@ -88,6 +88,7 @@ public class UserServiceImp implements UserService {
             return ApiResponse.<String>builder()
                     .status(HttpStatus.OK.value())
                     .message("User logged in successfully")
+                    .id(authUser.getUser().getId())
                     .role(authUser.getUser().getRole())
                     .token(token)
                     .expirationTime("1 month")
